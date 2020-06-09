@@ -1,4 +1,3 @@
-import 'package:ammar/pages/client/client_home_page.dart';
 import 'package:ammar/pages/login_page.dart';
 import 'package:flutter/material.dart';
 
@@ -12,7 +11,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter App',
       debugShowCheckedModeBanner: false,
-      home: ClientHomePage(),
+      home: LoginPage(),
     );
   }
 }
