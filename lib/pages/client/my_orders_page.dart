@@ -34,6 +34,7 @@ class _MyOrdersPageState extends State<MyOrdersPage> {
                   return ClientOrderWidget(
                     cartItem: CartItem(
                       product: Product(
+                        userId: 1,
                         name: 'Woman T-Shirt',
                         price: 29.99,
                         description: 'asdasdf',

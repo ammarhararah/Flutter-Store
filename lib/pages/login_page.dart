@@ -1,6 +1,11 @@
+import 'package:ammar/pages/client/client_home_page.dart';
+import 'package:ammar/pages/merchant/merchant_home_page.dart';
 import 'package:ammar/pages/register_page.dart';
+import 'package:ammar/state/auth_provider.dart';
 import 'package:ammar/widgets/button.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:toast/toast.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -96,8 +101,26 @@ class _LoginPageState extends State<LoginPage> {
                 SizedBox(height: 32),
                 Button(
                   text: 'Login',
-                  onTap: () {
-                    _formKey.currentState.validate();
+                  onTap: () async {
+                    if (!_formKey.currentState.validate()) {
+                      return;
+                    }
+                    final user = await Provider.of<AuthProvider>(context,
+                            listen: false)
+                        .login(emailController.text, passwordController.text);
+                    if (user == null) {
+                      Toast.show("User not found!", context,
+                          duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+                      return;
+                    }
+                    if (user.type == 'Type.Merchant') {
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (_) => MerchantHomePage()));
+                    }
+                    if (user.type == 'Type.Client') {
+                      Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(builder: (_) => ClientHomePage()));
+                    }
                   },
                 ),
                 SizedBox(height: 32),

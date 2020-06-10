@@ -1,11 +1,13 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:ammar/models/product.dart';
+import 'package:ammar/state/auth_provider.dart';
+import 'package:ammar/state/merchant_provider.dart';
 import 'package:ammar/widgets/button.dart';
 import 'package:flutter/material.dart';
-
-enum ProductCategory {
-  Men,
-  Women,
-  Kids,
-}
+import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 
 class NewProductPage extends StatefulWidget {
   @override
@@ -20,7 +22,8 @@ class _NewProductPageState extends State<NewProductPage> {
   final FocusNode nameNode = FocusNode();
   final FocusNode priceNode = FocusNode();
   final FocusNode descriptionNode = FocusNode();
-  ProductCategory productCategory;
+  String productCategory;
+  File _image;
 
   @override
   Widget build(BuildContext context) {
@@ -96,29 +99,58 @@ class _NewProductPageState extends State<NewProductPage> {
                   items: [
                     DropdownMenuItem(
                       child: Text('Men'),
-                      value: ProductCategory.Men,
+                      value: 'Men',
                     ),
                     DropdownMenuItem(
                       child: Text('Women'),
-                      value: ProductCategory.Women,
+                      value: 'Women',
                     ),
                     DropdownMenuItem(
                       child: Text('Kids'),
-                      value: ProductCategory.Kids,
+                      value: 'Kids',
                     ),
                   ],
                   isExpanded: true,
                 ),
-                SizedBox(height: 32),
+                SizedBox(height: 16),
+                if (_image != null)
+                  Center(
+                    child: Image.file(
+                      _image,
+                      width: 100,
+                      height: 100,
+                    ),
+                  ),
+                SizedBox(height: 8),
                 Button(
                   text: 'Pick Image',
-                  onTap: () {},
+                  onTap: () async {
+                    final pickedFile = await ImagePicker()
+                        .getImage(source: ImageSource.gallery);
+                    setState(() {
+                      _image = File(pickedFile.path);
+                    });
+                  },
                 ),
                 SizedBox(height: 32),
                 Button(
                   text: 'Add Product',
-                  onTap: () {
-                    _formKey.currentState.validate();
+                  onTap: () async {
+                    if (!_formKey.currentState.validate()) {
+                      return;
+                    }
+                    await Provider.of<MerchantProvider>(context, listen: false)
+                        .newProduct(Product(
+                      name: nameController.text,
+                      price: double.parse(priceController.text),
+                      description: descriptionController.text,
+                      category: productCategory,
+                      userId: Provider.of<AuthProvider>(context, listen: false)
+                          .user
+                          .id,
+                      image: base64Encode(_image.readAsBytesSync()),
+                    ));
+                    Navigator.of(context).pop();
                   },
                 ),
               ],

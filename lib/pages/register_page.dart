@@ -1,6 +1,9 @@
 import 'package:ammar/pages/login_page.dart';
+import 'package:ammar/state/auth_provider.dart';
 import 'package:ammar/widgets/button.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:toast/toast.dart';
 
 enum Type {
   Merchant,
@@ -149,8 +152,25 @@ class _RegisterPageState extends State<RegisterPage> {
                 SizedBox(height: 32),
                 Button(
                   text: 'Sign Up',
-                  onTap: () {
-                    _formKey.currentState.validate();
+                  onTap: () async {
+                    if (!_formKey.currentState.validate()) {
+                      return;
+                    }
+                    final user =
+                        await Provider.of<AuthProvider>(context, listen: false)
+                            .registerUser(
+                      nameController.text,
+                      emailController.text,
+                      passwordController.text,
+                      type.toString(),
+                    );
+                    if (user == null) {
+                      Toast.show("User not found!", context,
+                          duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+                      return;
+                    }
+                    Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: (_) => LoginPage()));
                   },
                 ),
                 SizedBox(height: 32),

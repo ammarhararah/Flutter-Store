@@ -78,6 +78,7 @@ class ClientHomePage extends StatelessWidget {
                 itemBuilder: (context, index) {
                   return ProductWidget(
                     product: Product(
+                      userId: 1,
                       name: 'Woman T-Shirt',
                       price: 29.99,
                       description: 'asdasdf',

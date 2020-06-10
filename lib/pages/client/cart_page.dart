@@ -37,6 +37,7 @@ class _CartPageState extends State<CartPage> {
                       return CartItemWidget(
                         cartItem: CartItem(
                           product: Product(
+                            userId: 1,
                             name: 'Woman T-Shirt',
                             price: 29.99,
                             description: 'asdasdf',
