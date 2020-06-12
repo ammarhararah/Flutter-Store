@@ -1,5 +1,6 @@
 import 'package:ammar/pages/login_page.dart';
 import 'package:ammar/state/auth_provider.dart';
+import 'package:ammar/state/client_provider.dart';
 import 'package:ammar/state/merchant_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -13,6 +14,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider<ClientProvider>(
+          create: (_) => ClientProvider(),
+          lazy: false,
+        ),
         ChangeNotifierProvider<MerchantProvider>(
           create: (_) => MerchantProvider(),
           lazy: false,

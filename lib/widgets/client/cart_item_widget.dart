@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:ammar/models/cart_item.dart';
+import 'package:ammar/state/client_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class CartItemWidget extends StatefulWidget {
   final CartItem cartItem;
@@ -19,9 +23,14 @@ class _CartItemWidgetState extends State<CartItemWidget> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Placeholder(
-              fallbackHeight: 100,
-              fallbackWidth: 100,
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.memory(
+                base64Decode(widget.cartItem.product.image),
+                height: 100,
+                width: 100,
+                fit: BoxFit.cover,
+              ),
             ),
             SizedBox(width: 16),
             Column(
@@ -43,14 +52,25 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                   child: Row(
                     children: <Widget>[
                       GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          if (widget.cartItem.quantity > 1)
+                            Provider.of<ClientProvider>(context, listen: false)
+                                .editItemQuantity(
+                                    productId: widget.cartItem.product.id,
+                                    quantity: widget.cartItem.quantity - 1);
+                        },
                         child: Icon(Icons.remove),
                       ),
                       SizedBox(width: 8),
                       Text('${widget.cartItem.quantity}'),
                       SizedBox(width: 8),
                       GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          Provider.of<ClientProvider>(context, listen: false)
+                              .editItemQuantity(
+                                  productId: widget.cartItem.product.id,
+                                  quantity: widget.cartItem.quantity + 1);
+                        },
                         child: Icon(Icons.add),
                       ),
                     ],
@@ -60,7 +80,10 @@ class _CartItemWidgetState extends State<CartItemWidget> {
             ),
             Spacer(),
             GestureDetector(
-              onTap: () {},
+              onTap: () {
+                Provider.of<ClientProvider>(context, listen: false)
+                    .deleteCartItem(productId: widget.cartItem.product.id);
+              },
               child: Icon(Icons.close),
             ),
           ],

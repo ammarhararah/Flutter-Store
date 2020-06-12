@@ -1,6 +1,11 @@
+import 'dart:convert';
+
+import 'package:ammar/models/cart_item.dart';
 import 'package:ammar/models/product.dart';
 import 'package:ammar/pages/client/cart_page.dart';
+import 'package:ammar/state/client_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ProductDetailsPage extends StatelessWidget {
   final Product product;
@@ -21,7 +26,15 @@ class ProductDetailsPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Placeholder(fallbackHeight: 300),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Image.memory(
+                  base64Decode(product.image),
+                  height: 300,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                ),
+              ),
               SizedBox(height: 16),
               Text(
                 product.name,
@@ -51,6 +64,10 @@ class ProductDetailsPage extends StatelessWidget {
       ),
       bottomNavigationBar: FlatButton(
         onPressed: () {
+          Provider.of<ClientProvider>(context, listen: false).cart.add(CartItem(
+                quantity: 1,
+                product: product,
+              ));
           Navigator.of(context)
               .push(MaterialPageRoute(builder: (_) => CartPage()));
         },

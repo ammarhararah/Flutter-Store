@@ -1,6 +1,11 @@
+import 'dart:convert';
+
 import 'package:ammar/models/cart_item.dart';
+import 'package:ammar/pages/client/cart_page.dart';
+import 'package:ammar/state/client_provider.dart';
 import 'package:ammar/widgets/button.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ClientOrderWidget extends StatefulWidget {
   final CartItem cartItem;
@@ -20,9 +25,14 @@ class _ClientOrderWidgetState extends State<ClientOrderWidget> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Placeholder(
-              fallbackHeight: 100,
-              fallbackWidth: 100,
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.memory(
+                base64Decode(widget.cartItem.product.image),
+                height: 100,
+                width: 100,
+                fit: BoxFit.cover,
+              ),
             ),
             SizedBox(width: 16),
             Column(
@@ -39,7 +49,13 @@ class _ClientOrderWidgetState extends State<ClientOrderWidget> {
                 ),
                 SizedBox(height: 8),
                 Button(
-                  onTap: () {},
+                  onTap: () {
+                    Provider.of<ClientProvider>(context, listen: false)
+                        .cart
+                        .add(widget.cartItem);
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (_) => CartPage()));
+                  },
                   text: 'Order Again',
                 ),
               ],

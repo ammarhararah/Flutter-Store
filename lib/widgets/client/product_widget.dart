@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:ammar/models/product.dart';
 import 'package:ammar/pages/client/product_details_page.dart';
 import 'package:flutter/material.dart';
@@ -19,8 +21,12 @@ class ProductWidget extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Placeholder(
-              fallbackHeight: 140,
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.memory(
+                base64Decode(product.image),
+                height: 140,
+              ),
             ),
             SizedBox(height: 8),
             Text('\$${product.price}'),
